@@ -29,21 +29,34 @@ app.layout = dbc.Container([
             'fontSize': '13px',
         },
         style_data_conditional=[
+        # -------- Highlighting the total column --------
         {
             'if': {'column_id': 'TOTAL', 'filter_query': '{TOTAL} > 10'},
-            'backgroundColor': '#1ABC9C',
+            'backgroundColor': '#1ABC9C', # Green
             'color': 'white',
         },
         {
             'if': {'column_id': 'TOTAL', 'filter_query': '{TOTAL} > 5 && {TOTAL} <= 10'},
-            'backgroundColor': '#F8BF75',
+            'backgroundColor': '#F8BF75', # Orange
             'color': 'white'
         },
         {
             'if': {'column_id': 'TOTAL', 'filter_query': '{TOTAL} <= 5'},
-            'backgroundColor': '#F28D82',
+            'backgroundColor': '#F28D82', # Red
             'color': 'white'
-        }
+        },
+        # -------- Highlighting the Cands Active column --------
+        {
+            'if': {'column_id': '# Cands Active', 'filter_query': '{# Cands Active} >= 3'},
+            'backgroundColor': '#1ABC9C', # Green
+            'color': 'white'
+        },
+        # -------- Highlighting the Submits to Date column --------
+        {
+            'if': {'column_id': 'Submits to Date', 'filter_query': '{Submits to Date} >= 5'},
+            'backgroundColor': '#F28D82', # Red
+            'color': 'white'
+        },      
         ],
         sort_action='native',
     ),
@@ -53,6 +66,14 @@ app.layout = dbc.Container([
 ], 
 fluid=True,
 )
+
+@app.callback(
+    Output("table", "selected_cells"),
+    Output("table", "active_cell"),
+    Input("table", "active_cell"),    
+)
+def clear(active_cell):
+    return [], None
 
 @app.callback(
     Output('table', 'data'),
@@ -71,18 +92,13 @@ def update_table(data, n_clicks, rows, columns):
         for row in rows:
             try:
                 row['TOTAL'] = sum([float(row[i]) for i in list(row.keys())[2:9]])
+                print("test")
             except:
                 row['TOTAL'] = 'NA'
     return rows
 
 
-# @app.callback(
-#     Output("table", "selected_cells"),
-#     Output("table", "active_cell"),
-#     Input("table", "active_cell"),    
-# )
-# def clear(active_cell):
-#     return [], None
+
 
 
 if __name__ == '__main__':
