@@ -18,8 +18,9 @@ app.layout = dbc.Container([
     html.P('Filter the data by searching or sorting the table below:'),
     dash_table.DataTable(
         id='table',
-        columns=[{"name": i, "id": i} for i in df.columns],
+        columns=[{'name': 'Job Order', 'id': 'Job Order'}, {'name': 'Potential Fee', 'id': 'Potential Fee'}, {'name': 'Story Rating', 'id': 'Story Rating', 'presentation': 'dropdown'}, {'name': 'Cand Pool', 'id': 'Cand Pool'}, {'name': 'Search Type', 'id': 'Search Type'}, {'name': 'Salary Rating', 'id': 'Salary Rating'}, {'name': 'Fee Rating', 'id': 'Fee Rating'}, {'name': 'Client Response ', 'id': 'Client Response '}, {'name': 'Client Relation', 'id': 'Client Relation'}, {'name': 'TOTAL', 'id': 'TOTAL'}, {'name': 'Ranking', 'id': 'Ranking'}, {'name': '# of Cands Pending', 'id': '# of Cands Pending'}, {'name': '# Cands Active', 'id': '# Cands Active'}, {'name': 'Submits to Date', 'id': 'Submits to Date'}, {'name': 'Minimum Calls still needed', 'id': 'Minimum Calls still needed'}],
         data=df.to_dict('records'),
+        # css=[{'selector':'.dash-table-container' '.dropdown', 'rule': 'position: static;' }],
         editable=True,
         row_deletable=True,
         style_cell={
@@ -59,6 +60,28 @@ app.layout = dbc.Container([
         },      
         ],
         sort_action='native',
+        sort_mode='multi',
+        sort_by=[{'column_id': 'TOTAL', 'direction': 'desc'}, {'column_id': 'Potential Fee', 'direction': 'asc'}],
+        tooltip_header={'Story Rating': {'value':'(2) Good Story & Good Location \n\n(1) One or the Other \n\n(-1) Bad Story & Bad Location',
+                                          'type':'markdown'}},
+        tooltip_delay=0,
+        tooltip_duration=None,
+
+        dropdown={
+            'Story Rating': {
+                'options': [
+                    {'label': 'Good Story & Good Location', 'value': 2},
+                    {'label': 'One or the Other', 'value': 1},
+                    {'label': 'Bad Story & Bad Location', 'value': -1},
+                ]
+            },
+            # 'city': {
+            #      'options': [
+            #         {'label': i, 'value': i}
+            #         for i in df['city'].unique()
+            #     ]
+            # },
+        }
     ),
     
     html.Button('Add Row', id='add-rows-button', className="btn btn-primary btn-sm", n_clicks=0),
@@ -66,14 +89,6 @@ app.layout = dbc.Container([
 ], 
 fluid=True,
 )
-
-@app.callback(
-    Output("table", "selected_cells"),
-    Output("table", "active_cell"),
-    Input("table", "active_cell"),    
-)
-def clear(active_cell):
-    return [], None
 
 @app.callback(
     Output('table', 'data'),
@@ -92,13 +107,24 @@ def update_table(data, n_clicks, rows, columns):
         for row in rows:
             try:
                 row['TOTAL'] = sum([float(row[i]) for i in list(row.keys())[2:9]])
-                print("test")
+                if float(row['# Cands Active']) >= 3:
+                    row['Minimum Calls still needed'] = 0
+                elif float(row['# Cands Active']) >= 2:
+                    row['Minimum Calls still needed'] = 25
+                else:
+                    row['Minimum Calls still needed'] = 50
             except:
                 row['TOTAL'] = 'NA'
     return rows
 
 
-
+# @app.callback(
+#     Output("table", "selected_cells"),
+#     Output("table", "active_cell"),
+#     Input("table", "active_cell"),    
+# )
+# def clear(active_cell):
+#     return [], None
 
 
 if __name__ == '__main__':
