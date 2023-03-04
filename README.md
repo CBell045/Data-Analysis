@@ -20,19 +20,18 @@ Answer: Fords tend to sell for a little more, at around $24,000.
 
 # Development Environment
 
-{Describe the tools that you used to develop the software}
+I used VSCode and Python 3.10 to develop this project. 
 
-{Describe the programming language that you used and any libraries.}
+The pandas, plotly, and dash libraries were essential to this project. I also used the Flatly bootstrap theme. 
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-* [Web Site Name](http://url.link.goes.here)
-* [Web Site Name](http://url.link.goes.here)
+These websites helped me as I worked on this project:
+* [Python Dash](https://dash.plotly.com/introduction)
+* [Flatly Bootstrap Theme](https://bootswatch.com/flatly/)
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-* Item 1
-* Item 2
-* Item 3
+* List specific questions and answers on the app
+* Get user input (slider) on mile range
+* Combine the two callbacks into one to avoid duplication
